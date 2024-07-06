@@ -6,7 +6,7 @@ import NodeCache from "node-cache";
 const app = express();
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY || "385f48105fdf4d99bc4113759240207";
 const cache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
-const TIMEOUT = 4500; // Set a timeout of 4.5 seconds to ensure response within 5 seconds
+const TIMEOUT = 5000; // Set a timeout of 5 seconds
 
 // Middleware to handle async errors
 const asyncHandler = fn => (req, res, next) => {
@@ -57,6 +57,7 @@ app.get("/api/hello", asyncHandler(async (req, res) => {
       res.status(500).send("Error getting weather information");
     }
   } catch (error) {
+    console.error("Error:", error.message);
     res.status(500).send("Error getting public IP address or weather information within the timeout period");
   }
 }));

@@ -3,15 +3,13 @@
   "builds": [
     {
       "src": "./app.js",
-      "use": "@vercel/node",
-      "maxDuration": 60
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.js",
-      "maxDuration": 60
+      "dest": "app.js"
     }
   ]
 }

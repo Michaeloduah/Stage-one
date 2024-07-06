@@ -6,7 +6,7 @@ import NodeCache from "node-cache";
 const app = express();
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY || "385f48105fdf4d99bc4113759240207";
 const TIMEOUT = 5000; // Set a timeout of 5 seconds for external API requests
-const cache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
+// const cache = new NodeCache({ stdTTL: 600 }); // Cache for 10 minutes
 
 // Middleware to handle async errors
 const asyncHandler = fn => (req, res, next) => {
@@ -31,12 +31,12 @@ app.get("/api/hello", asyncHandler(async (req, res) => {
     const cacheKey = `ip_weather_info_${ipAddress}`;
 
     // Check cache
-    const cachedResponse = cache.get(cacheKey);
+    // const cachedResponse = cache.get(cacheKey);
 
-    // If cached response exists, send it
-    if (cachedResponse) {
-      return res.send(cachedResponse);
-    }
+    // // If cached response exists, send it
+    // if (cachedResponse) {
+    //   return res.send(cachedResponse);
+    // }
 
     // Make parallel API requests
     const [ipApiResponse, weatherApiResponse] = await Promise.all([
@@ -60,7 +60,7 @@ app.get("/api/hello", asyncHandler(async (req, res) => {
       };
 
       // Store the response in the cache
-      cache.set(cacheKey, responseData);
+      // cache.set(cacheKey, responseData);
 
       // Send the final response
       res.send(responseData);

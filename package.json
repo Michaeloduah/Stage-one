@@ -8,6 +8,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "ip-geolocate": "^1.0.1",
+    "node-cache": "^5.1.2",
     "node-fetch": "^3.3.2",
     "nodemon": "^3.1.4",
     "public-ip": "^6.0.2",

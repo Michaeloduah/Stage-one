@@ -27,7 +27,7 @@ app.get("/api/hello", asyncHandler(async (req, res) => {
   }
 
   try {
-    // const ipAddress = await publicIp({ timeout: TIMEOUT });
+    const ipAddress = await publicIp({ timeout: TIMEOUT });
 
     // Make parallel API requests using axios with a timeout
     const [ipApiResponse, weatherApiResponse] = await Promise.all([

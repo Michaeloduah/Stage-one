@@ -1,4 +1,5 @@
 import express from "express";
+import { publicIpv4 } from "public-ip";
 import axios from "axios";
 
 const app = express();
@@ -10,21 +11,12 @@ const asyncHandler = fn => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-const getPublicIp = async () => {
-  try {
-    const response = await axios.get("https://api.ipify.org?format=json", { timeout: TIMEOUT });
-    return response.data.ip;
-  } catch (error) {
-    throw new Error("Failed to get public IP address");
-  }
-};
-
 app.get("/api/hello", asyncHandler(async (req, res) => {
   const visitorName = req.query.visitor_name || "Guest";
 
   try {
     // Get public IP
-    const ipAddress = await getPublicIp();
+    const ipAddress = await publicIpv4({ timeout: TIMEOUT });
 
     // Make parallel API requests
     const [ipApiResponse, weatherApiResponse] = await Promise.all([

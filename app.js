@@ -16,8 +16,6 @@ const asyncHandler = fn => (req, res, next) => {
 app.get("/api/hello", asyncHandler(async (req, res) => {
   const visitorName = req.query.visitor_name || "Guest";
 
-  console.time('Total Request Time');
-
   const getIpAddress = () => new Promise((resolve, reject) => {
     externalIp({ timeout: TIMEOUT })((err, ip) => {
       if (err) {
@@ -29,30 +27,22 @@ app.get("/api/hello", asyncHandler(async (req, res) => {
 
   try {
     // Get public IP
-    console.time('Get Public IP');
     const ipAddress = await getIpAddress();
-    console.timeEnd('Get Public IP');
-
     const cacheKey = `ip_weather_info_${ipAddress}`;
 
     // Check cache
-    console.time('Cache Check');
     const cachedResponse = cache.get(cacheKey);
-    console.timeEnd('Cache Check');
 
     // If cached response exists, send it
     if (cachedResponse) {
-      console.timeEnd('Total Request Time');
       return res.send(cachedResponse);
     }
 
     // Make parallel API requests
-    console.time('API Requests');
     const [ipApiResponse, weatherApiResponse] = await Promise.all([
       axios.get(`https://ipapi.co/${ipAddress}/json/`, { timeout: TIMEOUT }),
       axios.get(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${ipAddress}`, { timeout: TIMEOUT })
     ]);
-    console.timeEnd('API Requests');
 
     // Process API responses
     const ipData = ipApiResponse.data;
@@ -70,19 +60,14 @@ app.get("/api/hello", asyncHandler(async (req, res) => {
       };
 
       // Store the response in the cache
-      console.time('Cache Set');
       cache.set(cacheKey, responseData);
-      console.timeEnd('Cache Set');
 
       // Send the final response
-      console.timeEnd('Total Request Time');
       res.send(responseData);
     } else {
-      console.timeEnd('Total Request Time');
       res.status(500).send("Error getting weather information");
     }
   } catch (error) {
-    console.timeEnd('Total Request Time');
     console.error("Error:", error.message);
     res.status(500).send("Error getting public IP address or weather information within the timeout period");
   }
